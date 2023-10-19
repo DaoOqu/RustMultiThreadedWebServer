@@ -12,13 +12,15 @@ fn main() {
     let pool = ThreadPool::new(4);
 
     // We chose to handle any errors ungracefully with unwrap
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(4) {
         let stream = stream.unwrap();
 
         pool.execute(|| {
             handle_connection(stream);
         });
     }
+
+    println!("Shutting down..");
 }
 
 fn handle_connection(mut stream: TcpStream) {
